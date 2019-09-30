@@ -1,7 +1,25 @@
+/*
+ * file:	fileIO.cpp
+ * auth:	wchang 00960978
+ * created:	30 Sept 2k19
+ * lastModf:30 Sept 2k19
+ * prof:	K. Perkins @ CNU
+ * assgn:	cs327 p3 - vectors
+ */
+//===========================================================
+/*
+ * read from and write to text files with book and patron data
+ */
+//===========================================
+/*
+ * apparently we don't care about cleaning up random spaces
+ * and taking quotation marks off titles and authors.
+ * i had a relatively decent solution too :(
+ */
+//=========================
 #include "../includes_usr/fileIO.h"
 #include <vector>
 #include <fstream>
-#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -17,9 +35,11 @@ int loadBooks(vector<book> &books, const char* filename)
 		return COULD_NOT_OPEN_FILE;
 	if(fin.peek() == ifstream::traits_type::eof())
 		return NO_BOOKS_IN_LIBRARY;
+
 	book book_loader;
 	string line = "";
 	string token = "";
+
 	while(getline(fin, line)) {
 		stringstream line_stream(line);
 		getline(line_stream, token, ',');
@@ -34,6 +54,7 @@ int loadBooks(vector<book> &books, const char* filename)
 		book_loader.loaned_to_patron_id = stoi(token);
 		books.push_back(book_loader);
 	}
+	fin.close();
 	return SUCCESS;
 }
 
@@ -55,10 +76,9 @@ int saveBooks(vector<book> &books, const char* filename)
 				<< itr->title	<< ','
 				<< itr->author	<< ','
 				<< itr->state	<< ','
-				<< itr->loaned_to_patron_id;
-		//if(next(itr) != books.end())
-		fout	<< '\n';
+				<< itr->loaned_to_patron_id << '\n';
 	}
+	fout.close();
 	return SUCCESS;
 }
 
@@ -78,6 +98,7 @@ int loadPatrons(vector<patron> &patrons, const char* filename)
 	patron patron_loader;
 	string line = "";
 	string token = "";
+
 	while(getline(fin, line)) {
 		stringstream line_stream(line);
 		getline(line_stream, token, ',');
@@ -88,6 +109,7 @@ int loadPatrons(vector<patron> &patrons, const char* filename)
 		patron_loader.number_books_checked_out = stoi(token);
 		patrons.push_back(patron_loader);
 	}
+	fin.close();
 	return SUCCESS;
 }
 
@@ -105,9 +127,10 @@ int savePatrons(vector<patron> &patrons, const char* filename)
 		return COULD_NOT_OPEN_FILE;
 
 	for(vector<patron>::iterator itr = patrons.begin(); itr != patrons.end(); ++itr) {
-		fout	<< itr->patron_id 					<< ','
+		fout	<< itr->patron_id					<< ','
 				<< itr->name						<< ','
 				<< itr->number_books_checked_out	<< '\n';
 	}
+	fout.close();
 	return SUCCESS;
 }

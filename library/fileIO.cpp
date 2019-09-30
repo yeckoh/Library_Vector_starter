@@ -22,21 +22,18 @@ int loadBooks(vector<book> &books, const char* filename)
 	string token = "";
 	while(getline(fin, line)) {
 		stringstream line_stream(line);
-		//while(getline(line_stream, token, ',')) {
 		getline(line_stream, token, ',');
-			book_loader.book_id = stoi(token.substr(token.find_first_not_of(' ')));
-			getline(line_stream, token, ',');
-			book_loader.title = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
-			getline(line_stream, token, ',');
-			book_loader.author = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
-			getline(line_stream, token, ',');
-			book_loader.state = book_checkout_state(stoi(token.substr(token.find_first_not_of(' '))));
-			getline(line_stream, token, ',');
-			book_loader.loaned_to_patron_id = stoi(token.substr(token.find_first_not_of(' ')));
-//		}
-		cout << "loaded: " << book_loader.book_id << " " << book_loader.title << " " << book_loader.author << " " << book_loader.state << " " << book_loader.loaned_to_patron_id << "\n";
+		book_loader.book_id = stoi(token.substr(token.find_first_not_of(' ')));
+		getline(line_stream, token, ',');
+		book_loader.title = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
+		getline(line_stream, token, ',');
+		book_loader.author = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
+		getline(line_stream, token, ',');
+		book_loader.state = book_checkout_state(stoi(token.substr(token.find_first_not_of(' '))));
+		getline(line_stream, token, ',');
+		book_loader.loaned_to_patron_id = stoi(token.substr(token.find_first_not_of(' ')));
+		books.push_back(book_loader);
 	}
-	//cout << loader.book_id << loader.title << loader.author << loader.state << loader.loaned_to_patron_id;
 	return SUCCESS;
 }
 
@@ -57,6 +54,25 @@ int saveBooks(vector<book> &books, const char* filename)
  * */
 int loadPatrons(vector<patron> &patrons, const char* filename)
 {
+	ifstream fin(filename, fstream::in);
+	if(!fin.is_open())
+		return COULD_NOT_OPEN_FILE;
+	if(fin.peek() == ifstream::traits_type::eof())
+		return NO_PATRONS_IN_LIBRARY;
+
+	patron patron_loader;
+	string line = "";
+		string token = "";
+		while(getline(fin, line)) {
+			stringstream line_stream(line);
+			getline(line_stream, token, ',');
+			patron_loader.patron_id = stoi(token);
+			getline(line_stream, token, ',');
+			patron_loader.name = token;
+			getline(line_stream, token, ',');
+			patron_loader.number_books_checked_out = stoi(token);
+			patrons.push_back(patron_loader);
+		}
 	return SUCCESS;
 }
 

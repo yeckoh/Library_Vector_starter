@@ -50,7 +50,6 @@ int saveBooks(vector<book> &books, const char* filename)
 	if(!fout.is_open())
 		return COULD_NOT_OPEN_FILE;
 
-
 	for(vector<book>::iterator itr = books.begin(); itr != books.end(); ++itr) {
 		fout 	<< itr->book_id << ','
 				<< itr->title	<< ','
@@ -78,17 +77,17 @@ int loadPatrons(vector<patron> &patrons, const char* filename)
 
 	patron patron_loader;
 	string line = "";
-		string token = "";
-		while(getline(fin, line)) {
-			stringstream line_stream(line);
-			getline(line_stream, token, ',');
-			patron_loader.patron_id = stoi(token);
-			getline(line_stream, token, ',');
-			patron_loader.name = token;
-			getline(line_stream, token, ',');
-			patron_loader.number_books_checked_out = stoi(token);
-			patrons.push_back(patron_loader);
-		}
+	string token = "";
+	while(getline(fin, line)) {
+		stringstream line_stream(line);
+		getline(line_stream, token, ',');
+		patron_loader.patron_id = stoi(token);
+		getline(line_stream, token, ',');
+		patron_loader.name = token;
+		getline(line_stream, token, ',');
+		patron_loader.number_books_checked_out = stoi(token);
+		patrons.push_back(patron_loader);
+	}
 	return SUCCESS;
 }
 
@@ -99,5 +98,16 @@ int loadPatrons(vector<patron> &patrons, const char* filename)
  * */
 int savePatrons(vector<patron> &patrons, const char* filename)
 {
+	if(patrons.empty())
+		return NO_PATRONS_IN_LIBRARY;
+	ofstream fout(filename);
+	if(!fout.is_open())
+		return COULD_NOT_OPEN_FILE;
+
+	for(vector<patron>::iterator itr = patrons.begin(); itr != patrons.end(); ++itr) {
+		fout	<< itr->patron_id 					<< ','
+				<< itr->name						<< ','
+				<< itr->number_books_checked_out	<< '\n';
+	}
 	return SUCCESS;
 }

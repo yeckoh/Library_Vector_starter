@@ -23,15 +23,15 @@ int loadBooks(vector<book> &books, const char* filename)
 	while(getline(fin, line)) {
 		stringstream line_stream(line);
 		getline(line_stream, token, ',');
-		book_loader.book_id = stoi(token.substr(token.find_first_not_of(' ')));
+		book_loader.book_id = stoi(token);
 		getline(line_stream, token, ',');
-		book_loader.title = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
+		book_loader.title = token;
 		getline(line_stream, token, ',');
-		book_loader.author = token.substr(token.find_first_not_of("\" "), token.find_last_of('\"')-1);
+		book_loader.author = token;
 		getline(line_stream, token, ',');
-		book_loader.state = book_checkout_state(stoi(token.substr(token.find_first_not_of(' '))));
+		book_loader.state = book_checkout_state(stoi(token));
 		getline(line_stream, token, ',');
-		book_loader.loaned_to_patron_id = stoi(token.substr(token.find_first_not_of(' ')));
+		book_loader.loaned_to_patron_id = stoi(token);
 		books.push_back(book_loader);
 	}
 	return SUCCESS;
@@ -52,13 +52,13 @@ int saveBooks(vector<book> &books, const char* filename)
 
 
 	for(vector<book>::iterator itr = books.begin(); itr != books.end(); ++itr) {
-		fout 	<< itr->book_id << ","
-		<< '\"' << itr->title	<< "\","
-		<< '\"' << itr->author	<< "\","
+		fout 	<< itr->book_id << ','
+				<< itr->title	<< ','
+				<< itr->author	<< ','
 				<< itr->state	<< ','
 				<< itr->loaned_to_patron_id;
-		if(next(itr) != books.end())
-			fout << '\n';
+		//if(next(itr) != books.end())
+		fout	<< '\n';
 	}
 	return SUCCESS;
 }

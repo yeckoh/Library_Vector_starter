@@ -44,6 +44,22 @@ int loadBooks(vector<book> &books, const char* filename)
  * */
 int saveBooks(vector<book> &books, const char* filename)
 {
+	if(books.empty())
+		return NO_BOOKS_IN_LIBRARY;
+	ofstream fout(filename);
+	if(!fout.is_open())
+		return COULD_NOT_OPEN_FILE;
+
+
+	for(vector<book>::iterator itr = books.begin(); itr != books.end(); ++itr) {
+		fout 	<< itr->book_id << ","
+		<< '\"' << itr->title	<< "\","
+		<< '\"' << itr->author	<< "\","
+				<< itr->state	<< ','
+				<< itr->loaned_to_patron_id;
+		if(next(itr) != books.end())
+			fout << '\n';
+	}
 	return SUCCESS;
 }
 

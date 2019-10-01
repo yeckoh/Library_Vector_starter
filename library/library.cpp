@@ -52,9 +52,9 @@ void reloadAllData(){
 int checkout(int bookid, int patronid){
 	reloadAllData();
 
-	for(vector<patron>::iterator itrp; itrp != patrons.end(); ++itrp) {
+	for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {
 		if(itrp->patron_id == patronid) {
-			for(vector<book>::iterator itrb; itrb != books.end(); ++itrb) {
+			for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
 				if(itrb->book_id == bookid) {
 					if(itrp->number_books_checked_out == MAX_BOOKS_ALLOWED_OUT)
 						return TOO_MANY_OUT;
@@ -85,9 +85,9 @@ int checkout(int bookid, int patronid){
  */
 int checkin(int bookid){
 	reloadAllData();
-	for(vector<book>::iterator itrb; itrb != books.end(); ++itrb) {
+	for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
 		if(itrb->book_id == bookid) {
-			for(vector<patron>::iterator itrp; itrp != patrons.end(); ++itrp) {
+			for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {
 				if(itrp->patron_id == itrb->loaned_to_patron_id) {
 					--itrp->number_books_checked_out;
 					itrb->loaned_to_patron_id = NO_ONE;
@@ -127,6 +127,7 @@ int enroll(std::string &name){
  * 
  */
 int numbBooks(){
+	reloadAllData();
 	return books.size();
 }
 
@@ -135,6 +136,7 @@ int numbBooks(){
  * (ie. if 3 patrons returns 3)
  */
 int numbPatrons(){
+	reloadAllData();
 	return patrons.size();
 }
 
@@ -144,7 +146,7 @@ int numbPatrons(){
  *        or PATRON_NOT_ENROLLED         
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
-	for(vector<patron>::iterator itr; itr != patrons.end(); ++itr) {
+	for(vector<patron>::iterator itr = patrons.begin(); itr != patrons.end(); ++itr) {
 		if(itr->patron_id == patronid)
 			return itr->number_books_checked_out;
 	}
@@ -158,7 +160,7 @@ int howmanybooksdoesPatronHaveCheckedOut(int patronid){
  *         PATRON_NOT_ENROLLED no patron with this patronid
  */
 int whatIsPatronName(std::string &name,int patronid){
-	for(vector<patron>::iterator itr; itr != patrons.end(); ++itr) {
+	for(vector<patron>::iterator itr = patrons.begin(); itr != patrons.end(); ++itr) {
 		if(itr->patron_id == patronid) {
 			name = itr->name;
 			return SUCCESS;

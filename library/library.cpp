@@ -144,7 +144,11 @@ int numbPatrons(){
  *        or PATRON_NOT_ENROLLED         
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
-	return 0;
+	for(vector<patron>::iterator itr; itr != patrons.end(); ++itr) {
+		if(itr->patron_id == patronid)
+			return itr->number_books_checked_out;
+	}
+	return PATRON_NOT_ENROLLED;
 }
 
 /* search through patrons container to see if patronid is there

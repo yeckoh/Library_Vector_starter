@@ -127,7 +127,7 @@ int enroll(std::string &name){
  * 
  */
 int numbBooks(){
-	return 0;
+	return books.size();
 }
 
 /*

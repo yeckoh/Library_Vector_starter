@@ -14,6 +14,8 @@ using namespace std;
 //NOTE: also make sure you save patron and book data to disk any time you make a change to them
 //NOTE: for files where data is stored see constants.h BOOKFILE and PATRONFILE
 
+//	TODO:t3	return TOO MANY OUT
+
 vector<patron> patrons;
 vector<book> books;
 
@@ -54,12 +56,13 @@ int checkout(int bookid, int patronid){
 
 	for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {
 		if(itrp->patron_id == patronid) {
+			if(itrp->number_books_checked_out == MAX_BOOKS_ALLOWED_OUT)
+				return TOO_MANY_OUT;
 			for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
 				if(itrb->book_id == bookid) {
-					if(itrp->number_books_checked_out == MAX_BOOKS_ALLOWED_OUT)
-						return TOO_MANY_OUT;
 					itrb->loaned_to_patron_id = patronid;
 					itrb->state = OUT;
+					++itrp->number_books_checked_out;
 					saveBooks(books, BOOKFILE.c_str());
 					savePatrons(patrons, PATRONFILE.c_str());
 					return SUCCESS;
@@ -85,6 +88,7 @@ int checkout(int bookid, int patronid){
  */
 int checkin(int bookid){
 	reloadAllData();
+
 	for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
 		if(itrb->book_id == bookid) {
 			for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {

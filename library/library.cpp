@@ -115,7 +115,10 @@ int enroll(std::string &name){
 	reloadAllData();
 	patron new_patron;
 	new_patron.name = name;
-	new_patron.patron_id = ++patrons.back().patron_id;
+	if(patrons.empty())
+		new_patron.patron_id = 0;
+	else
+		new_patron.patron_id = ++patrons.back().patron_id;
 	patrons.push_back(new_patron);
 	savePatrons(patrons, PATRONFILE.c_str());
 	return new_patron.patron_id;

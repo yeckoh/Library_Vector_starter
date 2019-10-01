@@ -158,6 +158,12 @@ int howmanybooksdoesPatronHaveCheckedOut(int patronid){
  *         PATRON_NOT_ENROLLED no patron with this patronid
  */
 int whatIsPatronName(std::string &name,int patronid){
-	return SUCCESS;
+	for(vector<patron>::iterator itr; itr != patrons.end(); ++itr) {
+		if(itr->patron_id == patronid) {
+			name = itr->name;
+			return SUCCESS;
+		}
+	}
+	return PATRON_NOT_ENROLLED;
 }
 

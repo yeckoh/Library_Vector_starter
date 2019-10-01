@@ -84,7 +84,22 @@ int checkout(int bookid, int patronid){
  * 		   BOOK_NOT_IN_COLLECTION
  */
 int checkin(int bookid){
-	return SUCCESS;
+	reloadAllData();
+	for(vector<book>::iterator itrb; itrb != books.end(); ++itrb) {
+		if(itrb->book_id == bookid) {
+			for(vector<patron>::iterator itrp; itrp != patrons.end(); ++itrp) {
+				if(itrp->patron_id == itrb->loaned_to_patron_id) {
+					--itrp->number_books_checked_out;
+					itrb->loaned_to_patron_id = NO_ONE;
+					itrb->state = IN;
+					saveBooks(books, BOOKFILE.c_str());
+					savePatrons(patrons, PATRONFILE.c_str());
+					return SUCCESS;
+				}
+			}
+		}
+	}
+	return BOOK_NOT_IN_COLLECTION;
 }
 
 /*

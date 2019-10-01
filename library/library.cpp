@@ -1,20 +1,34 @@
+/*
+ * file:	library.cpp
+ * auth:	wchang 00960978
+ * created:	30 Sept 2k19
+ * lastModf:1 Oct 2k19
+ * prof:	K. Perkins @ CNU
+ * assgn:	cs327 p3 - vectors
+ */
+//===========================================================
+/*
+ * simulate a library with books and patrons
+ */
+//===========================================
+/*
+ * despite what checkout()'s description says,
+ * iterate through books then patrons, instead of patrons then books
+ * ie: bogus patrons dont matter if the book doesnt exist in the first place
+ * eg: iff a book exists, then check for a bogus patron
+ */
+//=========================
+
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <time.h>
-#include <iostream>
 
 #include "../includes_usr/library.h"
 #include "../includes_usr/datastructures.h"
 #include "../includes_usr/fileIO.h"
 
 using namespace std;
-
-//NOTE: please ensure patron and book data are loaded from disk before calling the following
-//NOTE: also make sure you save patron and book data to disk any time you make a change to them
-//NOTE: for files where data is stored see constants.h BOOKFILE and PATRONFILE
-
-//	TODO:t3	return TOO MANY OUT
 
 vector<patron> patrons;
 vector<book> books;
@@ -54,12 +68,12 @@ void reloadAllData(){
 int checkout(int bookid, int patronid){
 	reloadAllData();
 
-	for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {
-		if(itrp->patron_id == patronid) {
-			if(itrp->number_books_checked_out == MAX_BOOKS_ALLOWED_OUT)
-				return TOO_MANY_OUT;
-			for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
-				if(itrb->book_id == bookid) {
+	for(vector<book>::iterator itrb = books.begin(); itrb != books.end(); ++itrb) {
+		if(itrb->book_id == bookid) {
+			for(vector<patron>::iterator itrp = patrons.begin(); itrp != patrons.end(); ++itrp) {
+				if(itrp->patron_id == patronid) {
+					if(itrp->number_books_checked_out == MAX_BOOKS_ALLOWED_OUT)
+						return TOO_MANY_OUT;
 					itrb->loaned_to_patron_id = patronid;
 					itrb->state = OUT;
 					++itrp->number_books_checked_out;
@@ -68,10 +82,10 @@ int checkout(int bookid, int patronid){
 					return SUCCESS;
 				}
 			}
-			return BOOK_NOT_IN_COLLECTION;
+			return PATRON_NOT_ENROLLED;
 		}
 	}
-	return PATRON_NOT_ENROLLED;
+	return BOOK_NOT_IN_COLLECTION;
 }
 
 /* check a book back in 

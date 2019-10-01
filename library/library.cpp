@@ -112,7 +112,13 @@ int checkin(int bookid){
  *    the patron_id of the person added
  */
 int enroll(std::string &name){
-	return 0;
+	reloadAllData();
+	patron new_patron;
+	new_patron.name = name;
+	new_patron.patron_id = ++patrons.back().patron_id;
+	patrons.push_back(new_patron);
+	savePatrons(patrons, PATRONFILE.c_str());
+	return new_patron.patron_id;
 }
 
 /*
